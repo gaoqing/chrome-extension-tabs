@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "Quick Bookmark",
+  "version": "1.0",
+  "permissions": ["bookmarks", "activeTab"],
+  "action": {
+
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}

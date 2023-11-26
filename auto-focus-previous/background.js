@@ -1,9 +1,9 @@
-const KEY = 'IGNORE_URLS';
+const STORAGE_KEY = 'IGNORE_URLS';
 let IGNORE_URLS = [];
 
-loadStorage().then(list => IGNORE_URLS = list);
+loadStorage(STORAGE_KEY).then(list => IGNORE_URLS = list);
 
-chrome.storage.onChanged.addListener(() => loadStorage().then(list => IGNORE_URLS = list))
+chrome.storage.onChanged.addListener(() => loadStorage(STORAGE_KEY).then(list => IGNORE_URLS = list))
 
 chrome.tabs.onUpdated.addListener(
     async (tabId, changeInfo, tab) => {
@@ -34,10 +34,10 @@ function focusPreviousSameUrlTab(currentWindowId, currentTab, url) {
     })
 }
 
-function loadStorage() {
+function loadStorage(storageKey) {
     return new Promise(resolve => {
-        chrome.storage.local.get(KEY, items => {
-            const list = JSON.parse(items[`${KEY}`] || '[]');
+        chrome.storage.local.get(storageKey, items => {
+            const list = JSON.parse(items[`${storageKey}`] || '[]');
             resolve(list);
         });
     })

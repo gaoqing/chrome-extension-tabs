@@ -1,10 +1,10 @@
 const userInput = document.getElementById("new-skip-input");
 const content = document.getElementById("skip-list")
-const KEY = 'INGORE_URLS';
+const KEY = 'IGNORE_URLS';
 
 document.addEventListener("DOMContentLoaded", (event) => {
-    const data = chrome.storage.local.get(KEY, items => {
-        var list = items[`${KEY}`];
+    chrome.storage.local.get(KEY, items => {
+        const list = items[`${KEY}`];
         list && (content.innerText = list);
     });
 });
@@ -20,8 +20,8 @@ userInput.addEventListener("keydown", async event => {
 function addToStorage(newItem){
     return new Promise(resolve => {
         chrome.storage.local.get(KEY, items => {
-            var list = JSON.parse(items[`${KEY}`] || '[]');
-            var newList = [...list, newItem];
+            const list = JSON.parse(items[`${KEY}`] || '[]');
+            const newList = [...list, newItem];
             chrome.storage.local.set({[`${KEY}`] : JSON.stringify(newList)}).then(()=> resolve(newList));
         });
     })

@@ -1,5 +1,11 @@
 const folderName = "NEW_TEMP_BM";
 
+chrome.action.onClicked.addListener(function(tab) {
+    findOrCreateFolder(function(folderId) {
+        createBookmark(tab, folderId);
+    });
+});
+
 function createBookmark(tab, folderId) {
     chrome.bookmarks.create({
         'parentId': folderId,
@@ -21,9 +27,3 @@ function findOrCreateFolder(callback) {
         }
     });
 }
-
-chrome.action.onClicked.addListener(function(tab) {
-    findOrCreateFolder(function(folderId) {
-        createBookmark(tab, folderId);
-    });
-});

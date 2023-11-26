@@ -4,6 +4,7 @@
   "version": "1.0",
   "permissions": ["tabs", "activeTab", "storage"],
   "action": {
+    "default_title": "Skip path",
     "default_popup": "popup.html"
    },
   "background": {

@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Translate",
+  "description": "Translate",
+  "version": "1.0",
+  "permissions": ["contextMenus"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+  },
+  "icons": {
+    "16" : "16px.png"
+  }
+}

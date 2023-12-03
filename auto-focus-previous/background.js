@@ -37,7 +37,7 @@ function focusPreviousSameUrlTab(currentWindowId, currentTab, url) {
 function loadStorage(storageKey) {
     return new Promise(resolve => {
         chrome.storage.local.get(storageKey, items => {
-            const list = JSON.parse(items[`${storageKey}`] || '[]');
+            const list = JSON.parse(items[storageKey] || '[]');
             resolve(list);
         });
     })

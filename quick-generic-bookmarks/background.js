@@ -27,3 +27,23 @@ function findOrCreateFolder(callback) {
         }
     });
 }
+
+
+///// add a google search item to context menu,
+////  one plugin allow one top level item,  do here just for saving myself a new extension
+////  take as easter egg here?
+
+chrome.runtime.onInstalled.addListener(async () => {
+    chrome.contextMenus.create({
+        id: "googleTranslate",
+        title:  "google translate",
+        type: 'normal',
+        contexts: ['selection']
+    });
+});
+
+chrome.contextMenus.onClicked.addListener((item, tab) => {
+    const url = new URL(`https://translate.google.com/?hl=en&sl=en&tl=zh-CN&op=translate`);
+    url.searchParams.set('text', item.selectionText);
+    chrome.tabs.create({ url: url.href, index: tab.index + 1 });
+});

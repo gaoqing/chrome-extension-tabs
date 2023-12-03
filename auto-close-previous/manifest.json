@@ -1,11 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "Quick Bookmark",
+  "name": "Auto close previous tab with same url",
   "version": "1.0",
-  "permissions": ["bookmarks", "activeTab", "contextMenus"],
+  "permissions": ["tabs", "activeTab"],
   "action": {
 
-  },
+   },
   "background": {
     "service_worker": "background.js"
   }

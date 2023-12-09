@@ -19,7 +19,7 @@ chrome.runtime.onInstalled.addListener(() => getOrLoadBookmarks(true));
 
 async function getOrLoadBookmarks(forceReload) {
     try {
-        if (!memoryMap && memoryMap.size > 0 && !forceReload) {
+        if (memoryMap && memoryMap.size > 0 && !forceReload) {
             return Promise.resolve(memoryMap);
         }
 
@@ -120,7 +120,7 @@ chrome.omnibox.onInputChanged.addListener(
                 const bms = getBookmarksByInput(text, cache);
 
                 const suggestList = bms.map(({url, title}) => {
-                    const description = `${encodeXml(title)}  -  <url>${encodeXml(url)}</url>`;
+                    const description = `${encodeXml(title)}  _  <url>${encodeXml(url)}</url>`;
                     return {content: url, description, deletable: true};
                 })
 

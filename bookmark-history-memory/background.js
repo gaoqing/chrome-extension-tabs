@@ -12,8 +12,11 @@ const isToDeleteSkipPatternBookmarks = true;
 // {key1: [array of title_url], key2: [array of title_url]}
 const joinedKeyToUrlsCacheMap = new Map();
 
+let debounceSearchTaskTimer;
 const debounceSearchIntervalMs = 300;
-let debounceSearchTask;
+let lastReloadTimeMs = 0;
+const reloadMinimumMs = 10 * 60 * 1000;
+
 
 chrome.runtime.onInstalled.addListener(() => getOrLoadBookmarks(true));
 
@@ -25,11 +28,15 @@ async function getOrLoadBookmarks(forceReload) {
 
         console.log(new Date() + ": going to reload bookmarks");
         const startTime = Date.now();
-        const cache = new Map();
+        memoryMap.clear();
+        joinedKeyToUrlsCacheMap.clear();
+
         return new Promise(resolve => {
+            const cache = new Map();
             chrome.bookmarks.getTree(bookmarkItems => {
                 addBookmarksToMemory(bookmarkItems, cache);
                 console.log(`${new Date()}: load bookmarks size= ${cache.size}, elapsed time: ${Date.now() - startTime}`)
+                lastReloadTimeMs = Date.now();
                 memoryMap = cache;
                 resolve(cache);
             })
@@ -105,19 +112,19 @@ function getBookmarksByInput(text, cache) {
 
 chrome.omnibox.onInputChanged.addListener(
     (text, suggestFn) => {
-        const cachePromise = getOrLoadBookmarks();
+        const ifForceReload = (Date.now() - lastReloadTimeMs > reloadMinimumMs);
+        const cachePromise = getOrLoadBookmarks(ifForceReload);
 
         if (!text || text.length <= 2) {
             return suggestFn([]);
         } else {
-            if (debounceSearchTask) {
-                clearTimeout(debounceSearchTask)
+            if (debounceSearchTaskTimer) {
+                clearTimeout(debounceSearchTaskTimer)
             }
 
-            debounceSearchTask = setTimeout(async () => {
+            debounceSearchTaskTimer = setTimeout(async () => {
                 const cache = await cachePromise;
-                text = text.toLowerCase();
-                const bms = getBookmarksByInput(text, cache);
+                const bms = getBookmarksByInput(text.toLowerCase(), cache);
 
                 const suggestList = bms.map(({url, title}) => {
                     const description = `${encodeXml(title)}  _  <url>${encodeXml(url)}</url>`;

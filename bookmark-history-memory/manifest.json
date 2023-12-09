@@ -1,0 +1,12 @@
+{
+  "name": "BM",
+  "description": "Bookmark history memory",
+  "version": "1.0",
+  "permissions": ["bookmarks", "tabs"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "manifest_version": 3,
+  "omnibox": { "keyword" : "q" }
+}

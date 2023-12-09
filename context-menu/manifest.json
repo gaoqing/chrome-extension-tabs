@@ -3,7 +3,8 @@
   "name": "Translate",
   "description": "Translate",
   "version": "1.0",
-  "permissions": ["contextMenus"],
+  "permissions": ["contextMenus", "notifications"],
+  "host_permissions": ["https://dict.iciba.com/*", "https://www.iciba.com/*"],
   "background": {
     "service_worker": "background.js",
     "type": "module"

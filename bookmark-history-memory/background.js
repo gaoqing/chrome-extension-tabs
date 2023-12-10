@@ -1,4 +1,4 @@
-let memoryMap = new Map();
+console.log(new Date() + ": service worker initialized");
 
 const patternsToSkip = ['google.com/search?q=', 'google.com.hk/search?q=', 'baidu.com/s?',
     'youdao.com/result?word=', 'iciba.com/word?w=', 'youtube.com/results?search_query=',
@@ -17,30 +17,36 @@ const debounceSearchIntervalMs = 300;
 let lastReloadTimeMs = 0;
 const reloadMinimumMs = 10 * 60 * 1000;
 
+let loadBookmarksPromise = null;
 
-chrome.runtime.onInstalled.addListener(() => getOrLoadBookmarks(true));
+getOrLoadBookmarks(true);
+
+// chrome.runtime.onInstalled.addListener(() => {
+//     console.log(new Date() + ": chrome.runtime.onInstalled");
+//     getOrLoadBookmarks(true);
+// });
 
 async function getOrLoadBookmarks(forceReload) {
     try {
-        if (memoryMap && memoryMap.size > 0 && !forceReload) {
-            return Promise.resolve(memoryMap);
+        if (loadBookmarksPromise && !forceReload) {
+            return loadBookmarksPromise;
         }
 
         console.log(new Date() + ": going to reload bookmarks");
         const startTime = Date.now();
-        memoryMap.clear();
         joinedKeyToUrlsCacheMap.clear();
 
-        return new Promise(resolve => {
+        loadBookmarksPromise = new Promise(resolve => {
             const cache = new Map();
             chrome.bookmarks.getTree(bookmarkItems => {
                 addBookmarksToMemory(bookmarkItems, cache);
                 console.log(`${new Date()}: load bookmarks size= ${cache.size}, elapsed time: ${Date.now() - startTime}`)
                 lastReloadTimeMs = Date.now();
-                memoryMap = cache;
                 resolve(cache);
             })
         })
+
+        return loadBookmarksPromise;
     } catch (e) {
         console.error(new Date() + ": Error loading bookmarks", e);
         return Promise.resolve(new Map());
